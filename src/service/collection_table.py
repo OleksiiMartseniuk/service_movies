@@ -4,7 +4,7 @@ from src.service.imdb_api import ClientIMDB
 
 
 class ServiceDBIMDB:
-    def __init__(self):
+    def __init__(self) -> None:
         self.conn = psycopg2.connect(
             dbname=settings.NAME_DB,
             user=settings.USER_DB,
@@ -14,7 +14,7 @@ class ServiceDBIMDB:
         )
         self.clientIMDB = ClientIMDB()
 
-    def write_groups(self):
+    def write_groups(self) -> None:
         """Запись Group"""
         with self.conn as conn:
             with conn.cursor() as cursor:
@@ -22,7 +22,7 @@ class ServiceDBIMDB:
                     cursor.execute('INSERT INTO "group" (title) VALUES (%s);', (group,))
                 conn.commit()
 
-    def write_movie(self):
+    def write_movie(self) -> None:
         """Запись Movie"""
         with self.conn as conn:
             for group in self.clientIMDB.collection_data().items():
@@ -40,6 +40,15 @@ class ServiceDBIMDB:
                              item['crew'], item['imDbRating'], item['imDbRatingCount'], group_id[0]))
                     conn.commit()
 
-    def config(self):
+    def delete_table(self) -> None:
+        """ Очистка таблиць Group and Movie """
+        with self.conn as conn:
+            with conn.cursor() as cursor:
+                cursor.execute('DELETE FROM "group";')
+                cursor.execute('DELETE FROM "movie";')
+        conn.commit()
+
+    def config(self) -> None:
+        self.delete_table()
         self.write_groups()
         self.write_movie()
