@@ -11,7 +11,7 @@ PORT_DB = os.getenv('PORT_DB')
 DATABASE_URI = os.getenv('DATABASE_URI')
 
 APPS_MODELS = [
-    "src.database.models",
+    "src.app.films.models",
     "aerich.models"
 ]
 

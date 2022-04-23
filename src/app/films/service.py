@@ -1,7 +1,6 @@
 from typing import List
 
-from src.database import models
-from src.app.films import schemas
+from src.app.films import schemas, models
 from src.service.CRUD import ServiceCRUD
 
 
@@ -9,7 +8,7 @@ class ServiceGroup(ServiceCRUD):
     model = models.Group
     get_schema = schemas.GetGroup
 
-    async def all(self):
+    async def all(self) -> List[schemas.GetGroup]:
         return await self.get_schema.from_queryset(self.model.all())
 
 
