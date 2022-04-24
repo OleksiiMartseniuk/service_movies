@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 from src.app.auth import models
@@ -22,3 +22,9 @@ class Token(BaseModel):
 
 class UserName(BaseModel):
     username: str
+
+
+class CreateUser(BaseModel):
+    username: str
+    email: EmailStr
+    hashed_password: str
