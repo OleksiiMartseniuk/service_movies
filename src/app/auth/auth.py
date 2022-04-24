@@ -1,4 +1,5 @@
 import jwt
+import re
 from typing import Union
 
 from fastapi import Depends, HTTPException, status
@@ -13,14 +14,25 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
-def verify_password(plain_password, hashed_password) -> bool:
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     """ Сравнения хеш"""
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password) -> str:
+def get_password_hash(password: str) -> str:
     """ Получения шех-пароля """
     return pwd_context.hash(password)
+
+
+def is_password(password: str):
+    """ Валидатор пароля"""
+    # Проверяет наличие символов в обоих регистрах,
+    # числел и минимальную длину 6 символов
+    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$'
+    if re.match(pattern, password) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail='Password has invalid format ([A-Z]-[a-z]-d)'
+        )
 
 
 async def get_user(username: str) -> models.User:
