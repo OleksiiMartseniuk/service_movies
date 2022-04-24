@@ -12,6 +12,7 @@ DATABASE_URI = os.getenv('DATABASE_URI')
 
 APPS_MODELS = [
     "src.app.films.models",
+    "src.app.auth.models",
     "aerich.models"
 ]
 
@@ -21,3 +22,7 @@ GROUPS_LIST = [
     'MostPopularMovies',
     'MostPopularTVs'
 ]
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
