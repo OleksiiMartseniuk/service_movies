@@ -19,6 +19,15 @@ CREATE TABLE IF NOT EXISTS "movie" (
     "group_id" INT NOT NULL REFERENCES "group" ("id") ON DELETE CASCADE
 );
 COMMENT ON TABLE "movie" IS 'Фильм';
+CREATE TABLE IF NOT EXISTS "user" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "username" VARCHAR(50) NOT NULL UNIQUE,
+    "email" VARCHAR(50) NOT NULL UNIQUE,
+    "hashed_password" VARCHAR(255) NOT NULL UNIQUE,
+    "is_active" BOOL NOT NULL  DEFAULT True,
+    "is_superuser" BOOL NOT NULL  DEFAULT False
+);
+COMMENT ON TABLE "user" IS 'Модель Пользователя';
 CREATE TABLE IF NOT EXISTS "aerich" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "version" VARCHAR(255) NOT NULL,
