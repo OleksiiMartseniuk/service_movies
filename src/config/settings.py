@@ -1,4 +1,7 @@
 import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 API_KEY = os.getenv('API_KEY')
 
@@ -13,16 +16,17 @@ DATABASE_URI = os.getenv('DATABASE_URI')
 APPS_MODELS = [
     "src.app.films.models",
     "src.app.auth.models",
+    "src.app.person.models",
     "aerich.models"
 ]
 
 GROUPS_LIST = [
     'Top250Movies',
     'Top250TVs',
-    'MostPopularMovies',
-    'MostPopularTVs'
 ]
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+DATA_IMDB_DIR = os.path.join(BASE_DIR, 'src/service/imdb/data')

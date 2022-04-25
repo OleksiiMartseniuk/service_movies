@@ -14,13 +14,13 @@ class ServiceGroup(ServiceCRUD):
 
 
 class ServiceMovie(ServiceCRUD):
-    model = models.Movie
-    get_schema = schemas.GetMovie
+    model = models.FilmReel
+    get_schema = schemas.GetFilmReel
 
-    async def all(self, **kwargs) -> List[schemas.GetMovie]:
+    async def all(self, **kwargs) -> List[schemas.GetFilmReel]:
         return await self.get_schema.from_queryset(self.model.filter(**kwargs))
 
-    async def movie_rang(self, **kwargs) -> schemas.GetMovie:
+    async def movie_rang(self, **kwargs) -> schemas.GetFilmReel:
         movies = await self.model.filter(**kwargs)
         pk = random.randrange(movies[0].id, movies[-1].id)
         return await self.get(id=pk)
