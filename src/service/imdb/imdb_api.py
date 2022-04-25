@@ -29,3 +29,9 @@ class ClientIMDB:
             response = self._get(url_part)
             data[f'{group_title}'] = [response] if 'Error' in response.keys() else [item for item in response['items']]
         return data
+
+    def title_movie(self, id: str) -> dict:
+        """ Полные данные фильма """
+        url_part = f'/ru/API/Title/{self.api_key}/{id}'
+        response = self._get(url_part)
+        return response
