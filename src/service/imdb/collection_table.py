@@ -1,6 +1,6 @@
 import psycopg2
 from src.config import settings
-from src.service.imdb_api import ClientIMDB
+from src.service.imdb.imdb_api import ClientIMDB
 
 
 class ServiceDBIMDB:

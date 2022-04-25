@@ -27,7 +27,7 @@ async def get_groups():
 
 
 @imdb_router.get('/movie/{pk}',
-                 response_model=schemas.GetMovie,
+                 response_model=schemas.GetFilmReel,
                  responses={404: {"model": HTTPNotFoundError}})
 async def get_movie(pk: int):
     """ Вывод фильма """
@@ -35,7 +35,7 @@ async def get_movie(pk: int):
 
 
 @imdb_router.get('/movies/{group_id}',
-                 response_model=Page[schemas.GetMovie],
+                 response_model=Page[schemas.GetFilmReel],
                  responses={404: {"model": HTTPNotFoundError}})
 async def get_movies(group_id: int):
     """ Вывод всех фильмов  """
@@ -44,7 +44,7 @@ async def get_movies(group_id: int):
 
 
 @imdb_router.get('/rang_movies/{group_id}',
-                 response_model=schemas.GetMovie,
+                 response_model=schemas.GetFilmReel,
                  responses={404: {"model": HTTPNotFoundError}})
 async def rang_movies(group_id: int):
     """ Рандомный фильм  """
