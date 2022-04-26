@@ -1,6 +1,7 @@
 -- upgrade --
 CREATE TABLE IF NOT EXISTS "boxoffice" (
     "id" SERIAL NOT NULL PRIMARY KEY,
+    "id_movie" VARCHAR(20) NOT NULL,
     "budget" VARCHAR(50),
     "opening_weekend_usa" VARCHAR(50),
     "gross_usa" VARCHAR(50),
@@ -45,12 +46,12 @@ CREATE TABLE IF NOT EXISTS "filmreel" (
     "plot" TEXT NOT NULL,
     "plot_local" TEXT NOT NULL,
     "plot_local_is_rtl" BOOL NOT NULL,
-    "awards" VARCHAR(50) NOT NULL,
-    "content_rating" VARCHAR(10) NOT NULL,
+    "awards" VARCHAR(200) NOT NULL,
+    "content_rating" VARCHAR(10),
     "imdb_rating" VARCHAR(100) NOT NULL,
-    "imDd_rating_votes" VARCHAR(20) NOT NULL,
+    "imdd_rating_votes" VARCHAR(20) NOT NULL,
     "metacritic_rating" VARCHAR(10),
-    "tagline" VARCHAR(200),
+    "tagline" TEXT,
     "rank_top_250" VARCHAR(20) NOT NULL,
     "group_id" INT NOT NULL REFERENCES "group" ("id") ON DELETE CASCADE,
     "box_office_id" INT  UNIQUE REFERENCES "boxoffice" ("id") ON DELETE CASCADE
@@ -89,7 +90,27 @@ CREATE TABLE IF NOT EXISTS "aerich" (
     "app" VARCHAR(100) NOT NULL,
     "content" JSONB NOT NULL
 );
-CREATE TABLE IF NOT EXISTS "filmreel_person_actor" (
+CREATE TABLE IF NOT EXISTS "filmreel_person_creator" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_company" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "company_id" INT NOT NULL REFERENCES "company" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_country" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "country_id" INT NOT NULL REFERENCES "country" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_person_writer" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_genre" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "genre_id" INT NOT NULL REFERENCES "genre" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_person_star" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
 );
@@ -97,31 +118,11 @@ CREATE TABLE IF NOT EXISTS "filmreel_language" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "language_id" INT NOT NULL REFERENCES "language" ("id") ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "filmreel_company" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "company_id" INT NOT NULL REFERENCES "company" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_person_writer" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
-);
 CREATE TABLE IF NOT EXISTS "filmreel_person_director" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "filmreel_person_star" (
+CREATE TABLE IF NOT EXISTS "filmreel_person_actor" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_person_creator" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_country" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "country_id" INT NOT NULL REFERENCES "country" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_genre" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "genre_id" INT NOT NULL REFERENCES "genre" ("id") ON DELETE CASCADE
 );

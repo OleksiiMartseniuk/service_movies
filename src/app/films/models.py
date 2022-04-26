@@ -43,6 +43,7 @@ class Language(models.Model):
 
 class BoxOffice(models.Model):
     """ Театральная касса """
+    id_movie = fields.CharField(max_length=20)
     budget = fields.CharField(max_length=50, null=True)
     opening_weekend_usa = fields.CharField(max_length=50, null=True)
     gross_usa = fields.CharField(max_length=50, null=True)
@@ -64,7 +65,7 @@ class FilmReel(models.Model):
     plot = fields.TextField()
     plot_local = fields.TextField()
     plot_local_is_rtl = fields.BooleanField()
-    awards = fields.CharField(max_length=50)
+    awards = fields.CharField(max_length=200)
     director: fields.ManyToManyRelation[Person] = fields.ManyToManyField(
         'models.Person', related_name='directors', through='filmreel_person_director'
     )
@@ -89,14 +90,14 @@ class FilmReel(models.Model):
     language: fields.ManyToManyRelation[Language] = fields.ManyToManyField(
         'models.Language', related_name='languages', through='filmreel_language'
     )
-    content_rating = fields.CharField(max_length=10)
+    content_rating = fields.CharField(max_length=10, null=True)
     imdb_rating = fields.CharField(max_length=100)
-    imDd_rating_votes = fields.CharField(max_length=20)
+    imdd_rating_votes = fields.CharField(max_length=20)
     metacritic_rating = fields.CharField(max_length=10, null=True)
     box_office: fields.OneToOneRelation[BoxOffice] = fields.OneToOneField(
         'models.BoxOffice', related_name='box_office', null=True
     )
-    tagline = fields.CharField(max_length=200, null=True)
+    tagline = fields.TextField(null=True)
     rank_top_250 = fields.CharField(max_length=20)
     creator: fields.ManyToManyRelation[Person] = fields.ManyToManyField(
         'models.Person', related_name='creator', through='filmreel_person_creator'
