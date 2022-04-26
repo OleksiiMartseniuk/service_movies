@@ -30,3 +30,6 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 DATA_IMDB_DIR = os.path.join(BASE_DIR, 'src/service/imdb/data')
+
+PATH_GROUP_FILE = os.path.join(DATA_IMDB_DIR, 'group_movies.json')
+PATH_MOVIES_FILE = os.path.join(DATA_IMDB_DIR, 'movies.json')
