@@ -2,14 +2,14 @@ import json
 import os
 
 from src.service.imdb.imdb_api import ClientIMDB
-from src.config.settings import DATA_IMDB_DIR
+from src.config import settings
 
 
 class ServiceJsonWrite:
-    def __init__(self, client: ClientIMDB):
+    def __init__(self, client: ClientIMDB, path_group: str, path_movies: str):
         self.client = client
-        self.path_group = f'{DATA_IMDB_DIR}/group_movies.json'
-        self.path_movies = f'{DATA_IMDB_DIR}/movies.json'
+        self.path_group = path_group
+        self.path_movies = path_movies
 
     def write_file_group(self) -> None:
         """ Запись фильмов груп """
@@ -44,7 +44,7 @@ class ServiceJsonWrite:
             data = json.load(file)
 
         for group in data_file.items():
-            for item in group[1][26:28]:
+            for item in group[1][28:78]:
                 movie = self.client.title_movie(item['id'])
                 movie['rank'] = item['rank']
                 data[group[0]].append(movie)
@@ -54,6 +54,8 @@ class ServiceJsonWrite:
 
 
 client = ClientIMDB()
-a = ServiceJsonWrite(client)
-# a.write_file_movie()
-a.before_recording()
+a = ServiceJsonWrite(client=client,
+                     path_group=settings.PATH_GROUP_FILE,
+                     path_movies=settings.PATH_MOVIES_FILE)
+
+# a.before_recording()
