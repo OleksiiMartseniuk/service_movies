@@ -15,13 +15,15 @@ class Group(models.Model):
 
 class Genre(models.Model):
     """ Жанры """
-    title = fields.CharField(max_length=50)
+    title_key = fields.CharField(max_length=50)
+    title_value = fields.CharField(max_length=50)
     genres: fields.ManyToManyRelation['FilmReel']
 
 
 class Country(models.Model):
     """ Страна """
-    name = fields.CharField(max_length=50)
+    name_key = fields.CharField(max_length=50)
+    name_value = fields.CharField(max_length=50)
     countries: fields.ManyToManyRelation['FilmReel']
 
 
@@ -34,17 +36,17 @@ class Company(models.Model):
 
 class Language(models.Model):
     """ Язык """
-    name_ua = fields.CharField(max_length=50)
-    name_ru = fields.CharField(max_length=50)
+    name_key = fields.CharField(max_length=50)
+    name_value = fields.CharField(max_length=50)
     languages: fields.ManyToManyRelation['FilmReel']
 
 
 class BoxOffice(models.Model):
     """ Театральная касса """
-    budget = fields.CharField(max_length=50)
-    opening_weekend_usa = fields.CharField(max_length=50)
-    gross_usa = fields.CharField(max_length=50)
-    cumulative_worldwide_gross = fields.CharField(max_length=50)
+    budget = fields.CharField(max_length=50, null=True)
+    opening_weekend_usa = fields.CharField(max_length=50, null=True)
+    gross_usa = fields.CharField(max_length=50, null=True)
+    cumulative_worldwide_gross = fields.CharField(max_length=50, null=True)
     box_office: fields.OneToOneRelation['FilmReel']
 
 
@@ -57,8 +59,8 @@ class FilmReel(models.Model):
     year = fields.CharField(max_length=10)
     image = fields.CharField(max_length=1000)
     release_date = fields.CharField(max_length=10)
-    runtime_min = fields.CharField(max_length=10)
-    runtime_str = fields.CharField(max_length=20)
+    runtime_min = fields.CharField(max_length=10, null=True)
+    runtime_str = fields.CharField(max_length=20, null=True)
     plot = fields.TextField()
     plot_local = fields.TextField()
     plot_local_is_rtl = fields.BooleanField()
@@ -90,12 +92,15 @@ class FilmReel(models.Model):
     content_rating = fields.CharField(max_length=10)
     imdb_rating = fields.CharField(max_length=100)
     imDd_rating_votes = fields.CharField(max_length=20)
-    metacritic_rating = fields.CharField(max_length=10)
+    metacritic_rating = fields.CharField(max_length=10, null=True)
     box_office: fields.OneToOneRelation[BoxOffice] = fields.OneToOneField(
-        'models.BoxOffice', related_name='box_office'
+        'models.BoxOffice', related_name='box_office', null=True
     )
-    tagline = fields.CharField(max_length=200)
+    tagline = fields.CharField(max_length=200, null=True)
     rank_top_250 = fields.CharField(max_length=20)
+    creator: fields.ManyToManyRelation[Person] = fields.ManyToManyField(
+        'models.Person', related_name='creator', through='filmreel_person_creator'
+    )
     group: fields.ForeignKeyRelation[Group] = fields.ForeignKeyField(
         'models.Group', related_name='groups'
     )
