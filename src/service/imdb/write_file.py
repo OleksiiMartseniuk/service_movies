@@ -25,7 +25,7 @@ class ServiceJsonWrite:
         data = dict()
         for group in data_file.items():
             movie_list = list()
-            for item in group[1][:1]:
+            for item in group[1]:
                 movie = self.client.title_movie(item['id'])
                 movie['rank'] = item['rank']
                 movie_list.append(movie)
@@ -44,7 +44,7 @@ class ServiceJsonWrite:
             data = json.load(file)
 
         for group in data_file.items():
-            for item in group[1][28:78]:
+            for item in group[1][78:128]:
                 movie = self.client.title_movie(item['id'])
                 movie['rank'] = item['rank']
                 data[group[0]].append(movie)
@@ -58,4 +58,4 @@ a = ServiceJsonWrite(client=client,
                      path_group=settings.PATH_GROUP_FILE,
                      path_movies=settings.PATH_MOVIES_FILE)
 
-# a.before_recording()
+a.before_recording()
