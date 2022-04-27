@@ -1,20 +1,11 @@
 import psycopg2
 import json
+import datetime
 from src.config import settings
-from src.service.imdb.imdb_api import ClientIMDB
 
 
 class ServiceDBIMDB:
-    def __init__(
-            self,
-            client: ClientIMDB,
-            dbname: str,
-            user: str,
-            password: str,
-            host: str,
-            port: str,
-            path_movies: str
-    ) -> None:
+    def __init__(self, dbname: str, user: str, password: str, host: str, port: str, path_movies: str) -> None:
         self.conn = psycopg2.connect(
             dbname=dbname,
             user=user,
@@ -22,7 +13,6 @@ class ServiceDBIMDB:
             host=host,
             port=port
         )
-        self.clientIMDB = client
         self.path_movies = path_movies
 
     def write_group(self) -> None:
@@ -117,110 +107,164 @@ class ServiceDBIMDB:
                                     id_group, box_office_id))
                     conn.commit()
 
-    def write_m2m_person(self, data: list, table: str, film_reel: str) -> None:
-        """ Запись М2М FilmReel is Person"""
+    def write_m2m(self, data: list, table: str, table_key: str, search_key: str, film_reel: str, fields: list, key: str):
+        """ Запись М2М """
         with self.conn as conn:
             with conn.cursor() as cursor:
                 for item in data:
-                    cursor.execute('SELECT id FROM "person" WHERE id_person=%s;', (item['id'],))
-                    id_person = cursor.fetchone()[0]
+                    cursor.execute(f'SELECT id FROM "{table_key}" WHERE {search_key}=%s;', (item[f'{key}'],))
+                    id_key = cursor.fetchone()[0]
                     cursor.execute('SELECT id FROM "filmreel" WHERE id_movie=%s;', (film_reel,))
                     id_movie = cursor.fetchone()[0]
 
                     cursor.execute(f"""INSERT INTO "{table}"
-                                    (filmreel_id, person_id) VALUES (%s, %s);""",
-                                   (id_movie, id_person))
+                                    ({fields[0]}, {fields[1]}) VALUES (%s, %s);""",
+                                   (id_movie, id_key))
                     conn.commit()
-
-    def write_m2m(self, data: list, table: str, film_reel: str):
-        """"""
-        pass
 
     def write_table(self) -> None:
         # Запись Group
-        # self.write_group()
+        print('Запущена запись ждите...')
+        start = datetime.datetime.now()
+        self.write_group()
         data_file = self._open_file_movie()
         for group in data_file.items():
             list_person = list()
             for item in group[1]:
-                # # Запись Genre
-                # self.write_four_table(item['genreList'], 'genre', colum=['title_key', 'title_value'])
-                # # Запись Country
-                # self.write_four_table(item['countryList'], 'country', colum=['name_key', 'name_value'])
-                # # Запись Language
-                # self.write_four_table(item['languageList'], 'language', colum=['name_key', 'name_value'])
-                # # Запись Company
-                # self.write_four_table(item['companyList'], 'company', colum=['id_company', 'name'])
-                #
-                # if group[0] == settings.GROUPS_LIST[0]:
-                #     # Запись BoxOffice
-                #     self.write_box_office(item['boxOffice'], item['id'])
-                #
-                # if item.get('tvSeriesInfo'):
-                #     list_person.append(item['tvSeriesInfo']['creatorList'])
-                # if item['directorList'] or item['writerList']:
-                #     list_person.append(item['directorList'])
-                #     list_person.append(item['writerList'])
-                # list_person.append(item['starList'])
-                # list_person.append(item['actorList'])
-                # # Запись Person
-                # self.write_person(list_person)
-                # # Запись FilmReel
-                # self.write_film_reel(item)
+                # Запись Genre
+                self.write_four_table(item['genreList'], 'genre', colum=['title_key', 'title_value'])
+                # Запись Country
+                self.write_four_table(item['countryList'], 'country', colum=['name_key', 'name_value'])
+                # Запись Language
+                self.write_four_table(item['languageList'], 'language', colum=['name_key', 'name_value'])
+                # Запись Company
+                self.write_four_table(item['companyList'], 'company', colum=['id_company', 'name'])
 
-                # Запись М2М FilmReel is Person
-                # if item.get('tvSeriesInfo'):
-                #     self.write_m2m_person(item['tvSeriesInfo']['creatorList'], 'filmreel_person_creator', item['id'])
-                # self.write_m2m_person(item['starList'], 'filmreel_person_star', item['id'])
-                # self.write_m2m_person(item['actorList'], 'filmreel_person_actor', item['id'])
-                # self.write_m2m_person(item['creatorList'], 'filmreel_person_creator', item['id'])
-                # if item['directorList'] or item['writerList']:
-                #     self.write_m2m_person(item['directorList'], 'filmreel_person_director', item['id'])
-                #     self.write_m2m_person(item['writerList'], 'filmreel_person_writer', item['id'])
+                if group[0] == settings.GROUPS_LIST[0]:
+                    # Запись BoxOffice
+                    self.write_box_office(item['boxOffice'], item['id'])
 
-                pass
+                if item.get('tvSeriesInfo'):
+                    list_person.append(item['tvSeriesInfo']['creatorList'])
+                if item['directorList'] or item['writerList']:
+                    list_person.append(item['directorList'])
+                    list_person.append(item['writerList'])
+                list_person.append(item['starList'])
+                list_person.append(item['actorList'])
+                # Запись Person
+                self.write_person(list_person)
+                # Запись FilmReel
+                self.write_film_reel(item)
 
-    def write_movie(self) -> None:
-        """Запись Movie"""
-        with self.conn as conn:
-            for group in self.clientIMDB.collection_data().items():
-                with conn.cursor() as cursor:
-                    cursor.execute('SELECT id FROM "group" WHERE title=%s;', (group[0],))
-                    group_id = cursor.fetchone()
-                    for item in group[1]:
-                        if item.get('Error'):
-                            continue
-                        cursor.execute(
-                            """INSERT INTO "movie" (id_movie, rank, title, full_title, year, image,
-                            crew, imdb_rating, imdb_rating_count, group_id) VALUES
-                            (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
-                            (item['id'], item['rank'], item['title'], item['fullTitle'], item['year'], item['image'],
-                             item['crew'], item['imDbRating'], item['imDbRatingCount'], group_id[0]))
-                    conn.commit()
+                if item.get('tvSeriesInfo'):
+                    # Запись M2M filmreel_person_creator
+                    self.write_m2m(item['tvSeriesInfo']['creatorList'],
+                                   'filmreel_person_creator',
+                                   'person',
+                                   'id_person',
+                                   item['id'],
+                                   ['filmreel_id', 'person_id'],
+                                   'id')
+                # Запись M2M filmreel_person_star
+                self.write_m2m(item['starList'],
+                               'filmreel_person_star',
+                               'person',
+                               'id_person',
+                               item['id'],
+                               ['filmreel_id', 'person_id'],
+                               'id')
+                # Запись M2M filmreel_person_actor
+                self.write_m2m(item['actorList'],
+                               'filmreel_person_actor',
+                               'person',
+                               'id_person',
+                               item['id'],
+                               ['filmreel_id', 'person_id'],
+                               'id')
+                if item['directorList'] or item['writerList']:
+                    # Запись M2M filmreel_person_director
+                    self.write_m2m(item['directorList'],
+                                   'filmreel_person_director',
+                                   'person',
+                                   'id_person',
+                                   item['id'],
+                                   ['filmreel_id', 'person_id'],
+                                   'id')
+                    # Запись M2M filmreel_person_writer
+                    self.write_m2m(item['writerList'],
+                                   'filmreel_person_writer',
+                                   'person',
+                                   'id_person',
+                                   item['id'],
+                                   ['filmreel_id', 'person_id'],
+                                   'id')
+                # Запись M2M filmreel_company
+                self.write_m2m(item['companyList'],
+                               'filmreel_company',
+                               'company',
+                               'id_company',
+                               item['id'],
+                               ['filmreel_id', 'company_id'],
+                               'id')
+                # Запись M2M filmreel_country
+                self.write_m2m(item['countryList'],
+                               'filmreel_country',
+                               'country',
+                               'name_key',
+                               item['id'],
+                               ['filmreel_id', 'country_id'],
+                               'key')
+                # Запись M2M filmreel_genre
+                self.write_m2m(item['genreList'],
+                               'filmreel_genre',
+                               'genre',
+                               'title_key',
+                               item['id'],
+                               ['filmreel_id', 'genre_id'],
+                               'key')
+                # Запись M2M filmreel_language
+                self.write_m2m(item['languageList'],
+                               'filmreel_language',
+                               'language',
+                               'name_key',
+                               item['id'],
+                               ['filmreel_id', 'language_id'],
+                               'key')
+        end = datetime.datetime.now()
+        result = end - start
+        print('Готово')
+        print(f'Время выполнения -> {result.strftime("%M:%S")}')
 
     def delete_table(self) -> None:
-        """ Очистка таблиць Group and Movie """
+        """ Очистка таблиць """
         with self.conn as conn:
             with conn.cursor() as cursor:
+                cursor.execute('DELETE FROM "filmreel_person_creator";')
+                cursor.execute('DELETE FROM "filmreel_person_star";')
+                cursor.execute('DELETE FROM "filmreel_person_actor";')
+                cursor.execute('DELETE FROM "filmreel_person_director";')
+                cursor.execute('DELETE FROM "filmreel_person_writer";')
+                cursor.execute('DELETE FROM "filmreel_company";')
+                cursor.execute('DELETE FROM "filmreel_country";')
+                cursor.execute('DELETE FROM "filmreel_genre";')
+                cursor.execute('DELETE FROM "filmreel_language";')
+                cursor.execute('DELETE FROM "boxoffice";')
+                cursor.execute('DELETE FROM "company";')
+                cursor.execute('DELETE FROM "country";')
                 cursor.execute('DELETE FROM "filmreel";')
-                # cursor.execute('DELETE FROM "movie";')
+                cursor.execute('DELETE FROM "genre";')
+                cursor.execute('DELETE FROM "group";')
+                cursor.execute('DELETE FROM "language";')
+                cursor.execute('DELETE FROM "person";')
         conn.commit()
 
-    def config(self) -> None:
-        self.delete_table()
-        self.write_groups()
-        self.write_movie()
 
-
-client = ClientIMDB()
-db = ServiceDBIMDB(client=client,
-                   dbname=settings.NAME_DB,
+db = ServiceDBIMDB(dbname=settings.NAME_DB,
                    user=settings.USER_DB,
                    password=settings.PASSWORD_DB,
                    host=settings.HOST_DB,
                    port=settings.PORT_DB,
                    path_movies=settings.PATH_MOVIES_FILE)
 
-db.write_table()
+# db.write_table()
 # db.delete_table()
-
