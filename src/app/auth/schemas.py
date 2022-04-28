@@ -26,5 +26,7 @@ class UserName(BaseModel):
 
 class CreateUser(BaseModel):
     username: str
+    first_name: str
+    last_name: str
     email: EmailStr
     hashed_password: str
