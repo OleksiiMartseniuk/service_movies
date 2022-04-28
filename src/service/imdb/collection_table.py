@@ -110,7 +110,8 @@ class ServiceDBIMDB:
                                     id_group, box_office_id))
                     conn.commit()
 
-    def write_m2m(self, data: list, table: str, table_key: str, search_key: str, film_reel: str, fields: list, key: str):
+    def write_m2m(self, data: list, table: str, table_key: str, search_key: str,
+                  film_reel: str, fields: list, key: str):
         """ Запись М2М """
         with self.conn as conn:
             with conn.cursor() as cursor:
