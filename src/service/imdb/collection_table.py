@@ -1,10 +1,12 @@
 import psycopg2
 import json
 import datetime
+
 from src.config import settings
 
 
 class ServiceDBIMDB:
+    """ Запись данных в DB """
     def __init__(self, dbname: str, user: str, password: str, host: str, port: str, path_movies: str) -> None:
         self.conn = psycopg2.connect(
             dbname=dbname,
@@ -123,14 +125,14 @@ class ServiceDBIMDB:
                     conn.commit()
 
     def write_table(self) -> None:
-        # Запись Group
         print('Запущена запись ждите...')
         start = datetime.datetime.now()
+        # Запись Group
         self.write_group()
         data_file = self._open_file_movie()
         for group in data_file.items():
             list_person = list()
-            for item in group[1]:
+            for position, item in enumerate(group[1]):
                 # Запись Genre
                 self.write_four_table(item['genreList'], 'genre', colum=['title_key', 'title_value'])
                 # Запись Country
@@ -230,12 +232,13 @@ class ServiceDBIMDB:
                                item['id'],
                                ['filmreel_id', 'language_id'],
                                'key')
+                print(f'{group[0]} ->  item {position}/{len(group[1])}')
         end = datetime.datetime.now()
         result = end - start
         print('Готово')
-        print(f'Время выполнения -> {result.strftime("%M:%S")}')
+        print(f'Время выполнения -> {result}')
 
-    def delete_table(self) -> None:
+    def delete_tables(self) -> None:
         """ Очистка таблиць """
         with self.conn as conn:
             with conn.cursor() as cursor:
@@ -257,14 +260,3 @@ class ServiceDBIMDB:
                 cursor.execute('DELETE FROM "language";')
                 cursor.execute('DELETE FROM "person";')
         conn.commit()
-
-
-db = ServiceDBIMDB(dbname=settings.NAME_DB,
-                   user=settings.USER_DB,
-                   password=settings.PASSWORD_DB,
-                   host=settings.HOST_DB,
-                   port=settings.PORT_DB,
-                   path_movies=settings.PATH_MOVIES_FILE)
-
-# db.write_table()
-# db.delete_table()
