@@ -59,7 +59,7 @@ class FilmReel(models.Model):
     type = fields.CharField(max_length=20)
     year = fields.CharField(max_length=10)
     image = fields.CharField(max_length=1000)
-    release_date = fields.CharField(max_length=10)
+    release_date = fields.CharField(max_length=10, null=True)
     runtime_min = fields.CharField(max_length=10, null=True)
     runtime_str = fields.CharField(max_length=20, null=True)
     plot = fields.TextField()
