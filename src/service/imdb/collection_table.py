@@ -2,12 +2,12 @@ import psycopg2
 import json
 import datetime
 
-from src.config import settings
-
 
 class ServiceDBIMDB:
     """ Запись данных в DB """
-    def __init__(self, dbname: str, user: str, password: str, host: str, port: str, path_movies: str) -> None:
+
+    def __init__(self, dbname: str, user: str, password: str, host: str,
+                 port: str, path_movies: str, group_list: list) -> None:
         self.conn = psycopg2.connect(
             dbname=dbname,
             user=user,
@@ -16,12 +16,13 @@ class ServiceDBIMDB:
             port=port
         )
         self.path_movies = path_movies
+        self.group_list = group_list
 
     def write_group(self) -> None:
         """Запись Group"""
         with self.conn as conn:
             with conn.cursor() as cursor:
-                for group in settings.GROUPS_LIST:
+                for group in self.group_list:
                     cursor.execute('SELECT id FROM "group" WHERE title=%s;', (group,))
                     if not cursor.fetchone():
                         cursor.execute('INSERT INTO "group" (title) VALUES (%s);', (group,))
@@ -142,7 +143,7 @@ class ServiceDBIMDB:
                 # Запись Company
                 self.write_four_table(item['companyList'], 'company', colum=['id_company', 'name'])
 
-                if group[0] == settings.GROUPS_LIST[0]:
+                if group[0] == self.group_list[0]:
                     # Запись BoxOffice
                     self.write_box_office(item['boxOffice'], item['id'])
 
