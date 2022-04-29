@@ -11,3 +11,6 @@ class Person(models.Model):
     # writers: fields.ManyToManyRelation['FilmReel']
     # stars: fields.ManyToManyRelation['FilmReel']
     # actors: fields.ManyToManyRelation['FilmReel']
+
+    def __str__(self):
+        return self.id_person

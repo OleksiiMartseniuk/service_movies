@@ -19,12 +19,18 @@ class Genre(models.Model):
     title_value = fields.CharField(max_length=50)
     genres: fields.ManyToManyRelation['FilmReel']
 
+    def __str__(self):
+        return self.title_key
+
 
 class Country(models.Model):
     """ Страна """
     name_key = fields.CharField(max_length=50)
     name_value = fields.CharField(max_length=50)
     countries: fields.ManyToManyRelation['FilmReel']
+
+    def __str__(self):
+        return self.name_key
 
 
 class Company(models.Model):
@@ -33,12 +39,18 @@ class Company(models.Model):
     name = fields.CharField(max_length=150)
     companies: fields.ManyToManyRelation['FilmReel']
 
+    def __str__(self):
+        return self.id_company
+
 
 class Language(models.Model):
     """ Язык """
     name_key = fields.CharField(max_length=50)
     name_value = fields.CharField(max_length=50)
     languages: fields.ManyToManyRelation['FilmReel']
+
+    def __str__(self):
+        return self.name_key
 
 
 class BoxOffice(models.Model):
@@ -49,6 +61,9 @@ class BoxOffice(models.Model):
     gross_usa = fields.CharField(max_length=50, null=True)
     cumulative_worldwide_gross = fields.CharField(max_length=50, null=True)
     box_office: fields.OneToOneRelation['FilmReel']
+
+    def __str__(self):
+        return f'BoxOffice -> {self.id_movie}'
 
 
 class FilmReel(models.Model):
@@ -98,7 +113,7 @@ class FilmReel(models.Model):
         'models.BoxOffice', related_name='box_office', null=True
     )
     tagline = fields.TextField(null=True)
-    rank_top_250 = fields.CharField(max_length=20)
+    rank_top_250 = fields.CharField(max_length=20, null=True)
     creator: fields.ManyToManyRelation[Person] = fields.ManyToManyField(
         'models.Person', related_name='creator', through='filmreel_person_creator'
     )
