@@ -1,15 +1,16 @@
 import requests
+from requests.exceptions import HTTPError, ConnectionError
 
-from src.config.settings import API_KEY, GROUPS_LIST
+from src.config.settings import API_KEY
 from urllib.parse import urljoin
 
 
 class ClientIMDB:
     """ Клиент IMDB"""
-    def __init__(self, api_key: str = API_KEY, domain: str = 'https://imdb-api.com') -> None:
+    def __init__(self, groups: list, api_key: str = API_KEY, domain: str = 'https://imdb-api.com') -> None:
         self.api_key = api_key
         self.domain = domain
-        self.groups = GROUPS_LIST
+        self.groups = groups
 
     def _get(self, url_part: str) -> dict:
         url = urljoin(self.domain, url_part)
@@ -18,8 +19,8 @@ class ClientIMDB:
             if not response.json().get('errorMessage'):
                 return response.json()
             else:
-                return {'Error': response.json().get('errorMessage')}
-        return {'Error': f'status_code -> {response.status_code}'}
+                raise ConnectionError(response.json().get('errorMessage'))
+        raise HTTPError(f'status_code -> {response.status_code}')
 
     def collection_data(self) -> dict:
         """ Сбор данных по групам """
