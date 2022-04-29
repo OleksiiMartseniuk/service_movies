@@ -1,6 +1,5 @@
 import psycopg2
 import json
-import datetime
 
 
 class ServiceDBIMDB:
@@ -127,14 +126,12 @@ class ServiceDBIMDB:
                     conn.commit()
 
     def write_table(self) -> None:
-        print('Запущена запись ждите...')
-        start = datetime.datetime.now()
         # Запись Group
         self.write_group()
         data_file = self._open_file_movie()
         for group in data_file.items():
             list_person = list()
-            for position, item in enumerate(group[1]):
+            for item in group[1]:
                 # Запись Genre
                 self.write_four_table(item['genreList'], 'genre', colum=['title_key', 'title_value'])
                 # Запись Country
@@ -162,83 +159,33 @@ class ServiceDBIMDB:
 
                 if item.get('tvSeriesInfo'):
                     # Запись M2M filmreel_person_creator
-                    self.write_m2m(item['tvSeriesInfo']['creatorList'],
-                                   'filmreel_person_creator',
-                                   'person',
-                                   'id_person',
-                                   item['id'],
-                                   ['filmreel_id', 'person_id'],
-                                   'id')
+                    self.write_m2m(item['tvSeriesInfo']['creatorList'], 'filmreel_person_creator', 'person',
+                                   'id_person', item['id'], ['filmreel_id', 'person_id'], 'id')
                 # Запись M2M filmreel_person_star
-                self.write_m2m(item['starList'],
-                               'filmreel_person_star',
-                               'person',
-                               'id_person',
-                               item['id'],
-                               ['filmreel_id', 'person_id'],
-                               'id')
+                self.write_m2m(item['starList'], 'filmreel_person_star', 'person', 'id_person',
+                               item['id'], ['filmreel_id', 'person_id'], 'id')
                 # Запись M2M filmreel_person_actor
-                self.write_m2m(item['actorList'],
-                               'filmreel_person_actor',
-                               'person',
-                               'id_person',
-                               item['id'],
-                               ['filmreel_id', 'person_id'],
-                               'id')
+                self.write_m2m(item['actorList'], 'filmreel_person_actor', 'person', 'id_person',
+                               item['id'], ['filmreel_id', 'person_id'], 'id')
                 if item['directorList'] or item['writerList']:
                     # Запись M2M filmreel_person_director
-                    self.write_m2m(item['directorList'],
-                                   'filmreel_person_director',
-                                   'person',
-                                   'id_person',
-                                   item['id'],
-                                   ['filmreel_id', 'person_id'],
-                                   'id')
+                    self.write_m2m(item['directorList'], 'filmreel_person_director', 'person',
+                                   'id_person', item['id'], ['filmreel_id', 'person_id'], 'id')
                     # Запись M2M filmreel_person_writer
-                    self.write_m2m(item['writerList'],
-                                   'filmreel_person_writer',
-                                   'person',
-                                   'id_person',
-                                   item['id'],
-                                   ['filmreel_id', 'person_id'],
-                                   'id')
+                    self.write_m2m(item['writerList'], 'filmreel_person_writer', 'person', 'id_person',
+                                   item['id'], ['filmreel_id', 'person_id'], 'id')
                 # Запись M2M filmreel_company
-                self.write_m2m(item['companyList'],
-                               'filmreel_company',
-                               'company',
-                               'id_company',
-                               item['id'],
-                               ['filmreel_id', 'company_id'],
-                               'id')
+                self.write_m2m(item['companyList'], 'filmreel_company', 'company', 'id_company',
+                               item['id'], ['filmreel_id', 'company_id'], 'id')
                 # Запись M2M filmreel_country
-                self.write_m2m(item['countryList'],
-                               'filmreel_country',
-                               'country',
-                               'name_key',
-                               item['id'],
-                               ['filmreel_id', 'country_id'],
-                               'key')
+                self.write_m2m(item['countryList'], 'filmreel_country', 'country', 'name_key',
+                               item['id'], ['filmreel_id', 'country_id'], 'key')
                 # Запись M2M filmreel_genre
-                self.write_m2m(item['genreList'],
-                               'filmreel_genre',
-                               'genre',
-                               'title_key',
-                               item['id'],
-                               ['filmreel_id', 'genre_id'],
-                               'key')
+                self.write_m2m(item['genreList'], 'filmreel_genre', 'genre', 'title_key',
+                               item['id'], ['filmreel_id', 'genre_id'], 'key')
                 # Запись M2M filmreel_language
-                self.write_m2m(item['languageList'],
-                               'filmreel_language',
-                               'language',
-                               'name_key',
-                               item['id'],
-                               ['filmreel_id', 'language_id'],
-                               'key')
-                print(f'{group[0]} ->  item {position}/{len(group[1])}')
-        end = datetime.datetime.now()
-        result = end - start
-        print('Готово')
-        print(f'Время выполнения -> {result}')
+                self.write_m2m(item['languageList'], 'filmreel_language', 'language', 'name_key',
+                               item['id'], ['filmreel_id', 'language_id'], 'key')
 
     def delete_tables(self) -> None:
         """ Очистка таблиць """
