@@ -1,3 +1,6 @@
+import os
+from typing import Optional
+
 import psycopg2
 import json
 
@@ -27,11 +30,14 @@ class ServiceDBIMDB:
                         cursor.execute('INSERT INTO "group" (title) VALUES (%s);', (group,))
                         conn.commit()
 
-    def _open_file_movie(self) -> dict:
+    def _open_file_movie(self) -> Optional[dict]:
         """ Данные файла """
-        with open(self.path_movies, 'r') as file:
-            data_file = json.load(file)
-        return data_file
+        if os.path.exists(self.path_movies):
+            with open(self.path_movies, 'r') as file:
+                data_file = json.load(file)
+            return data_file
+        else:
+            raise FileNotFoundError()
 
     def write_four_table(self, genre_list: list, table: str, colum: list) -> None:
         """ Запись Genre or Сountry or Company or Language """
