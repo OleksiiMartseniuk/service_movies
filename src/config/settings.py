@@ -1,8 +1,6 @@
 import os
 from pathlib import Path
 
-from tortoise.contrib.fastapi import HTTPNotFoundError
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -36,5 +34,3 @@ DATA_IMDB_DIR = os.path.join(BASE_DIR, 'src/service/imdb/data')
 
 PATH_GROUP_FILE = os.path.join(DATA_IMDB_DIR, 'group_movies.json')
 PATH_MOVIES_FILE = os.path.join(DATA_IMDB_DIR, 'movies.json')
-
-error_404 = {404: {"model": HTTPNotFoundError}}
