@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from typing import List, Optional
+
 from tortoise.contrib.pydantic import pydantic_model_creator
 from src.app.films import models
 
@@ -11,9 +12,9 @@ GetLanguage = pydantic_model_creator(models.Language, name="get_language")
 GetBoxOffice = pydantic_model_creator(models.BoxOffice, name="get_box_office")
 
 
-class Movie(BaseModel):
-    film_reel: GetFilmReel
-    get_group: GetGroup
-    country: GetCountry
-    company: GetCompany
-    language: GetLanguage
+class Movie(GetFilmReel):
+    country:  List[GetCountry] = []
+    company:  List[GetCompany] = []
+    language:  List[GetLanguage] = []
+    group: GetGroup
+    box_office: Optional[GetBoxOffice] = None
