@@ -192,6 +192,7 @@ class ServiceDBIMDB:
                 # Запись M2M filmreel_language
                 self.write_m2m(item['languageList'], 'filmreel_language', 'language', 'name_key',
                                item['id'], ['filmreel_id', 'language_id'], 'key')
+        self.conn.close()
 
     def delete_tables(self) -> None:
         """ Очистка таблиць """
@@ -215,3 +216,4 @@ class ServiceDBIMDB:
                 cursor.execute('DELETE FROM "language";')
                 cursor.execute('DELETE FROM "person";')
         conn.commit()
+        self.conn.close()
