@@ -36,3 +36,9 @@ class ClientIMDB:
         url_part = f'/ru/API/Title/{self.api_key}/{id}'
         response = self._get(url_part)
         return response
+
+    def user_count(self):
+        """ Количество запросов """
+        url_part = f'/API/Usage/{self.api_key}'
+        response = self._get(url_part)
+        return response
