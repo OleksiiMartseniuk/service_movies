@@ -2,60 +2,58 @@ import json
 import os
 
 from src.service.imdb.imdb_api import ClientIMDB
-from src.config import settings
 
 
 class ServiceJsonWrite:
-    def __init__(self, client: ClientIMDB, path_group: str, path_movies: str):
-        self.client = client
+    """ Запись даных в json """
+
+    def __init__(self, path_group: str, path_movies: str) -> None:
         self.path_group = path_group
         self.path_movies = path_movies
 
-    def write_file_group(self) -> None:
-        """ Запись фильмов груп """
-        if not os.path.exists(self.path_group):
-            data = self.client.collection_data()
-            with open(self.path_group, 'w') as file:
-                json.dump(data, file, ensure_ascii=False, indent=4)
+    def _open_write(self, data: dict, path: str) -> None:
+        with open(path, 'w') as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
 
-    def write_file_movie(self) -> None:
+    def _open_read(self, path: str) -> dict:
+        if os.path.exists(path):
+            with open(path, 'r') as file:
+                return json.load(file)
+        else:
+            raise FileNotFoundError
+
+    def write_file_group(self, data: dict) -> None:
+        """ Запись фильмов груп """
+        self._open_write(data, self.path_group)
+
+    def write_file_movie(self, client: ClientIMDB) -> None:
         """ Запись полного описания фильма """
-        with open(self.path_group, 'r') as file:
-            data_file = json.load(file)
+        data_file = self._open_read(self.path_group)
         data = dict()
         for group in data_file.items():
             movie_list = list()
             for item in group[1]:
-                movie = self.client.title_movie(item['id'])
+                movie = client.title_movie(item['id'])
                 movie['rank'] = item['rank']
                 movie_list.append(movie)
 
             data[group[0]] = movie_list
 
-        with open(self.path_movies, 'w') as file:
-            json.dump(data, file, ensure_ascii=False, indent=4)
+        self._open_write(data, self.path_movies)
 
-    def before_recording(self) -> None:
+    def before_recording(self, client: ClientIMDB, star: int, stop: int) -> None:
         """ Дозапись файла """
-        with open(self.path_group, 'r') as file:
-            data_file = json.load(file)
-
-        with open(self.path_movies, 'r') as file:
-            data = json.load(file)
+        data_file = self._open_read(self.path_group)
+        if not os.path.exists(self.path_movies):
+            open(self.path_movies, 'w').close()
+            data = {}
+        else:
+            data = self._open_read(self.path_movies)
 
         for group in data_file.items():
-            for item in group[1][78:128]:
-                movie = self.client.title_movie(item['id'])
+            for item in group[1][star:stop]:
+                movie = client.title_movie(item['id'])
                 movie['rank'] = item['rank']
                 data[group[0]].append(movie)
 
-        with open(self.path_movies, 'w') as file:
-            json.dump(data, file, ensure_ascii=False, indent=4)
-
-
-client = ClientIMDB()
-a = ServiceJsonWrite(client=client,
-                     path_group=settings.PATH_GROUP_FILE,
-                     path_movies=settings.PATH_MOVIES_FILE)
-
-a.before_recording()
+        self._open_write(data, self.path_movies)
