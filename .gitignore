@@ -3,3 +3,5 @@ venv
 .env
 .coverage
 data
+.pytest_cache
+htmlcov
