@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from tortoise.contrib.pydantic import pydantic_model_creator
 from src.app.films import models
+from src.app.person.schemas import GetPerson
 
 GetGroup = pydantic_model_creator(models.Group, name="get_group")
 GetFilmReel = pydantic_model_creator(models.FilmReel, name="get_film_reel")
@@ -13,6 +14,11 @@ GetBoxOffice = pydantic_model_creator(models.BoxOffice, name="get_box_office")
 
 
 class Movie(GetFilmReel):
+    director: List[GetPerson] = []
+    writer: List[GetPerson] = []
+    star: List[GetPerson] = []
+    actor: List[GetPerson] = []
+    genre: List[GetGenre] = []
     country:  List[GetCountry] = []
     company:  List[GetCompany] = []
     language:  List[GetLanguage] = []
