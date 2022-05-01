@@ -28,7 +28,7 @@ class ClientIMDB:
         for group_title in self.groups:
             url_part = f'/en/API/{group_title}/{self.api_key}'
             response = self._get(url_part)
-            data[f'{group_title}'] = [response] if 'Error' in response.keys() else [item for item in response['items']]
+            data[f'{group_title}'] = [item for item in response['items']]
         return data
 
     def title_movie(self, id: str) -> dict:
