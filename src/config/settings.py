@@ -31,6 +31,10 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 DATA_IMDB_DIR = os.path.join(BASE_DIR, 'src/service/imdb/data')
+DATA_IMDB_DIR_TEST = os.path.join(BASE_DIR, 'src/tests/test_write_json/data_test')
 
 PATH_GROUP_FILE = os.path.join(DATA_IMDB_DIR, 'group_movies.json')
 PATH_MOVIES_FILE = os.path.join(DATA_IMDB_DIR, 'movies.json')
+
+PATH_GROUP_FILE_TEST = os.path.join(DATA_IMDB_DIR_TEST, 'group_movies_test.json')
+PATH_MOVIES_FILE_TEST = os.path.join(DATA_IMDB_DIR_TEST, 'movies_test.json')

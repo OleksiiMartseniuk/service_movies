@@ -44,7 +44,7 @@ class ServiceJsonWrite:
     def before_recording(self, client: ClientIMDB, star: int, stop: int) -> None:
         """ Добавление фильмов в файл """
         data_file = self._open_read(self.path_group)
-        if not os.path.exists(self.path_movies):
+        if not os.path.exists(self.path_movies) or os.stat(self.path_movies).st_size == 0:
             open(self.path_movies, 'w').close()
             data = {}
             for group in data_file.items():

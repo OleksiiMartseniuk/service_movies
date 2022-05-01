@@ -270,6 +270,15 @@ item = {
     }
 
 valid_json_answer_collection_data = {
-  "items": [item for _ in range(250)],
+  "items": [item for _ in range(5)],
   "errorMessage": ""
 }
+
+
+def valid_json_answer_title_movie_group() -> dict:
+    valid_json_answer_title_movie['rank'] = 'string'
+    data_movie_group = {
+        'Top250Movies': [valid_json_answer_title_movie for _ in range(5)],
+        'Top250TVs': [valid_json_answer_title_movie for _ in range(5)]
+    }
+    return data_movie_group
