@@ -1,4 +1,12 @@
 from tortoise import fields, models
+from enum import Enum
+
+
+class ModelName(str, Enum):
+    director = "director"
+    writer = "writer"
+    star = "star"
+    actor = "actor"
 
 
 class Person(models.Model):
@@ -14,3 +22,5 @@ class Person(models.Model):
 
     def __str__(self):
         return self.id_person
+
+    from enum import Enum
