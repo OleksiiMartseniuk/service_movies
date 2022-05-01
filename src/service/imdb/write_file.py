@@ -5,7 +5,7 @@ from src.service.imdb.imdb_api import ClientIMDB
 
 
 class ServiceJsonWrite:
-    """ Запись даных в json """
+    """ Запись данных в json """
 
     def __init__(self, path_group: str, path_movies: str) -> None:
         self.path_group = path_group
@@ -23,7 +23,7 @@ class ServiceJsonWrite:
             raise FileNotFoundError
 
     def write_file_group(self, data: dict) -> None:
-        """ Запись фильмов груп """
+        """ Запись фильмов групп """
         self._open_write(data, self.path_group)
 
     def write_file_movie(self, client: ClientIMDB) -> None:
@@ -42,11 +42,13 @@ class ServiceJsonWrite:
         self._open_write(data, self.path_movies)
 
     def before_recording(self, client: ClientIMDB, star: int, stop: int) -> None:
-        """ Дозапись файла """
+        """ Добавление фильмов в файл """
         data_file = self._open_read(self.path_group)
         if not os.path.exists(self.path_movies):
             open(self.path_movies, 'w').close()
             data = {}
+            for group in data_file.items():
+                data[group[0]] = []
         else:
             data = self._open_read(self.path_movies)
 
