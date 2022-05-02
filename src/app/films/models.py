@@ -1,6 +1,12 @@
 from tortoise import fields, models
+from enum import Enum
 
 from src.app.person.models import Person
+
+
+class ModelNameFilmReel(str, Enum):
+    movie = "Movie"
+    tv_series = "TVSeries"
 
 
 class Group(models.Model):

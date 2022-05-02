@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
-from src.app.films import schemas, service
+from src.app.films import schemas, service, models
 
 
 imdb_router = APIRouter()
@@ -29,14 +29,14 @@ async def get_movie(pk: int):
     return await service.movie_s.get(id=pk)
 
 
-@imdb_router.get('/movies/', response_model=Page[schemas.GetFilmReel], responses={404: {"model": HTTPNotFoundError}})
+@imdb_router.get('/movies', response_model=Page[schemas.GetFilmReel], responses={404: {"model": HTTPNotFoundError}})
 async def get_movies(params: Params = Depends()):
     """ Вывод всех фильмов  """
     movies = await service.movie_s.all(type='Movie')
     return paginate(movies, params)
 
 
-@imdb_router.get('/tv-series/', response_model=Page[schemas.GetFilmReel], responses={404: {"model": HTTPNotFoundError}})
+@imdb_router.get('/tv-series', response_model=Page[schemas.GetFilmReel], responses={404: {"model": HTTPNotFoundError}})
 async def get_tv_series(params: Params = Depends()):
     """ Вывод всех сериалов  """
     movies = await service.movie_s.all(type='TVSeries')
@@ -44,10 +44,10 @@ async def get_tv_series(params: Params = Depends()):
 
 
 @imdb_router.get(
-    '/range/{type_film_reel}/',
+    '/range/{type_film_reel}',
     response_model=schemas.GetFilmReel,
     responses={404: {"model": HTTPNotFoundError}}
 )
-async def range_film_reel(type_film_reel: str):
+async def range_film_reel(type_film_reel: models.ModelNameFilmReel):
     """ Рандомный фильм или сериал"""
-    return await service.movie_s.range_film_reel(type=type_film_reel)
+    return await service.movie_s.range_film_reel(type=type_film_reel.value)

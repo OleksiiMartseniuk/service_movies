@@ -5,8 +5,8 @@ from fastapi import HTTPException
 from src.service.CRUD import ServiceCRUD
 from src.app.auth.models import User
 from src.app.auth import schemas as schemas_auth
-from src.app.films.models import FilmReel
-from src.app.user import models, schemas
+from src.app.films.models import FilmReel, ModelNameFilmReel
+from src.app.user import schemas
 from src.app.films.schemas import GetFilmReel
 
 
@@ -49,7 +49,7 @@ class ServiceUser(ServiceCRUD):
                 raise HTTPException(status_code=300, detail="Object not found")
         return schemas.Messages(messages='Done')
 
-    async def all_viewed(self, film_reel_type: models.ModelNameFilmReel, current_user: User) -> List[GetFilmReel]:
+    async def all_viewed(self, film_reel_type: ModelNameFilmReel, current_user: User) -> List[GetFilmReel]:
         if film_reel_type.value == 'Movie':
             list_film_reel = current_user.movie
         elif film_reel_type.value == 'TVSeries':

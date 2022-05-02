@@ -5,8 +5,9 @@ from src.app.auth.models import User
 from src.app.auth.auth import get_current_active_user
 from src.app.auth import schemas as auth_schemas
 from src.app.films.schemas import GetFilmReel
+from src.app.films.models import ModelNameFilmReel
 
-from src.app.user import service, models, schemas
+from src.app.user import service, schemas
 
 
 user_router = APIRouter()
@@ -34,7 +35,7 @@ async def user_viewed(pk: int, current_user: User = Depends(get_current_active_u
 
 @user_router.get('/user/all_viewed', response_model=List[GetFilmReel])
 async def user_all_viewed(
-        film_reel_type: models.ModelNameFilmReel,
+        film_reel_type: ModelNameFilmReel,
         current_user: User = Depends(get_current_active_user)
 ):
     return await service.user_s.all_viewed(film_reel_type, current_user)
