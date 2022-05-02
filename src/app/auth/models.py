@@ -21,13 +21,5 @@ class User(models.Model):
     data_join = fields.DatetimeField(auto_now_add=True)
     last_join = fields.DatetimeField(auto_now=True)
 
-    def amount_of_time_spent_plus(self, movie: FilmReel):
-        self.movie.add(movie)
-        self.amount_of_time_spent += int(movie.runtime_min)
-
-    def amount_of_time_spent_minus(self, movie: FilmReel):
-        self.amount_of_time_spent -= int(movie.runtime_min)
-        self.movie.remove(movie)
-
     def __str__(self):
         return self.username
