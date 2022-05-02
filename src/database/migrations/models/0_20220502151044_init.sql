@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     "username" VARCHAR(50) NOT NULL UNIQUE,
     "email" VARCHAR(50) NOT NULL UNIQUE,
     "hashed_password" VARCHAR(255) NOT NULL UNIQUE,
+    "amount_of_time_spent" INT NOT NULL  DEFAULT 0,
     "is_active" BOOL NOT NULL  DEFAULT True,
     "is_superuser" BOOL NOT NULL  DEFAULT False,
     "first_name" VARCHAR(100) NOT NULL,
@@ -90,26 +91,6 @@ CREATE TABLE IF NOT EXISTS "aerich" (
     "app" VARCHAR(100) NOT NULL,
     "content" JSONB NOT NULL
 );
-CREATE TABLE IF NOT EXISTS "filmreel_person_creator" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_person_actor" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_company" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "company_id" INT NOT NULL REFERENCES "company" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_person_writer" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "filmreel_language" (
-    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
-    "language_id" INT NOT NULL REFERENCES "language" ("id") ON DELETE CASCADE
-);
 CREATE TABLE IF NOT EXISTS "filmreel_person_director" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
@@ -122,7 +103,35 @@ CREATE TABLE IF NOT EXISTS "filmreel_genre" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "genre_id" INT NOT NULL REFERENCES "genre" ("id") ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS "filmreel_person_actor" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_language" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "language_id" INT NOT NULL REFERENCES "language" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_person_creator" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS "filmreel_person_star" (
     "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
     "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_company" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "company_id" INT NOT NULL REFERENCES "company" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "filmreel_person_writer" (
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE,
+    "person_id" INT NOT NULL REFERENCES "person" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "user_filmreel_movie" (
+    "user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "user_filmreel_tv_series" (
+    "user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "filmreel_id" INT NOT NULL REFERENCES "filmreel" ("id") ON DELETE CASCADE
 );
