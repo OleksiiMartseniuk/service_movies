@@ -6,7 +6,7 @@ from src.service.CRUD import ServiceCRUD
 from src.app.auth import models, schemas
 
 
-class ServiceUser(ServiceCRUD):
+class ServiceAuth(ServiceCRUD):
     model = models.User
     get_schema = schemas.User
 
@@ -31,4 +31,4 @@ class ServiceUser(ServiceCRUD):
         return await self.get_schema.from_tortoise_orm(obj)
 
 
-user_s = ServiceUser()
+user_s = ServiceAuth()
