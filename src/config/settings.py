@@ -14,6 +14,12 @@ PORT_DB = os.getenv('PORT_DB')
 
 DATABASE_URI = os.getenv('DATABASE_URI')
 
+ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:4200/",
+    "http://localhost:8080/"
+]
+
 APPS_MODELS = [
     "src.app.films.models",
     "src.app.auth.models",
