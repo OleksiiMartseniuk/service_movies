@@ -6,7 +6,6 @@ from unittest import mock
 class TestServiceIMDB:
     @mock.patch('src.service.imdb.collection_table.ServiceDBIMDB')
     def test_delete(self, MockServiceDBIMDB):
-        print(type(MockServiceDBIMDB))
         db = MockServiceDBIMDB()
         service.delete(db)
         db.delete_tables.assert_called_once()
