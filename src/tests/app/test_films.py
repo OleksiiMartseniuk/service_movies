@@ -3,36 +3,15 @@ import pytest
 from httpx import AsyncClient
 
 from main import app
-from src.app.films import models
 
-
-async def collection_data_base():
-    for i in range(2):
-        await models.Group.create(title=f'group_test_{i}')
-
-    for i in range(10):
-        await models.FilmReel.create(
-            id_movie=f'id_movie_{i}',
-            title=f'title_{i}',
-            full_title=f'full_title_{i}',
-            type='Movie' if i % 2 else 'TVSeries',
-            year=f'year_{i}',
-            image=f'image_{i}',
-            plot=f'plot_{i}',
-            plot_local=f'plot_local_{i}',
-            plot_local_is_rtl=True,
-            awards=f'awards_{i}',
-            imdb_rating=f'imdb_rating_{i}',
-            imdd_rating_votes=f'imdd_rating_votes_{i}',
-            group_id=1 if i % 2 else 2
-        )
+from src.tests.app.conftest import collection_film_reel
 
 
 class TestFilms:
 
     @pytest.mark.asyncio
     async def test_get_group(self):
-        await collection_data_base()
+        await collection_film_reel()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get("/imdb/group/1", )
@@ -44,7 +23,7 @@ class TestFilms:
 
     @pytest.mark.asyncio
     async def test_get_groups(self):
-        await collection_data_base()
+        await collection_film_reel()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get("/imdb/groups", )
@@ -57,7 +36,7 @@ class TestFilms:
 
     @pytest.mark.asyncio
     async def test_get_movie(self):
-        await collection_data_base()
+        await collection_film_reel()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get("/imdb/movie/1", )
@@ -98,7 +77,7 @@ class TestFilms:
     @pytest.mark.parametrize('type_name, url_path', [('Movie', 'movies'), ('TVSeries', 'tv-series')])
     @pytest.mark.asyncio
     async def test_get_all(self, type_name, url_path):
-        await collection_data_base()
+        await collection_film_reel()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get(f"/imdb/{url_path}", params={'page': 1, 'size': 50})
@@ -112,7 +91,7 @@ class TestFilms:
     @pytest.mark.parametrize('type_name', ['Movie', 'TVSeries'])
     @pytest.mark.asyncio
     async def test_range_film_reel(self, type_name):
-        await collection_data_base()
+        await collection_film_reel()
 
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get(f"imdb/range/{type_name}")
