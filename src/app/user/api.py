@@ -19,17 +19,17 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 
 
 @user_router.put('/user/update', response_model=auth_schemas.User)
-async def read_users_me(user: schemas.UpdateUser, current_user: User = Depends(get_current_active_user)):
+async def users_update(user: schemas.UpdateUser, current_user: User = Depends(get_current_active_user)):
     return await service.user_s.update(user, id=current_user.id)
 
 
 @user_router.post('/user/viewed', response_model=schemas.Messages)
-async def user_viewed(pk: int, current_user: User = Depends(get_current_active_user)):
+async def user_viewed(pk: schemas.FilmReelId, current_user: User = Depends(get_current_active_user)):
     return await service.user_s.viewed(pk, current_user)
 
 
 @user_router.post('/user/cancel_viewed', response_model=schemas.Messages)
-async def user_viewed(pk: int, current_user: User = Depends(get_current_active_user)):
+async def user_viewed(pk: schemas.FilmReelId, current_user: User = Depends(get_current_active_user)):
     return await service.user_s.cancel_preview(pk, current_user)
 
 
