@@ -15,9 +15,9 @@ class ServiceUser(ServiceCRUD):
     model_film_reel = FilmReel
     get_schema = schemas_auth.User
 
-    async def viewed(self, pk: int, current_user: User) -> schemas.Messages:
+    async def viewed(self, pk: schemas.FilmReelId, current_user: User) -> schemas.Messages:
         """ Добавить в просмотренные """
-        film_reel = await self.model_film_reel.get(id=pk)
+        film_reel = await self.model_film_reel.get(id=pk.id_film_reel)
         if film_reel.type == 'Movie':
             if film_reel not in await current_user.movie.all():
                 await current_user.movie.add(film_reel)
@@ -32,9 +32,9 @@ class ServiceUser(ServiceCRUD):
                 raise HTTPException(status_code=300, detail="Already added")
         return schemas.Messages(messages='Done')
 
-    async def cancel_preview(self, pk: int, current_user: User) -> schemas.Messages:
+    async def cancel_preview(self, pk: schemas.FilmReelId, current_user: User) -> schemas.Messages:
         """ Отменить с просмотренных """
-        film_reel = await self.model_film_reel.get(id=pk)
+        film_reel = await self.model_film_reel.get(id=pk.id_film_reel)
         if film_reel.type == 'Movie':
             if film_reel in await current_user.movie.all():
                 await current_user.movie.remove(film_reel)

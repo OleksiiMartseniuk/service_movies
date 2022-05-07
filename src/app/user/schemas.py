@@ -10,3 +10,7 @@ class UpdateUser(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[EmailStr]
+
+
+class FilmReelId(BaseModel):
+    id_film_reel: int
