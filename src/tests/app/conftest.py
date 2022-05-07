@@ -2,9 +2,26 @@ import asyncio
 
 import pytest
 from tortoise import Tortoise
+
+from src.app.auth.auth import get_password_hash
+from src.app.auth.tokenizator import create_token
 from src.config import settings
 from src.app.films.models import Group, FilmReel
 from src.app.person.models import Person
+from src.app.auth.models import User
+
+
+async def get_user_token() -> str:
+    """Token user"""
+    user = await User.create(
+        username='test',
+        email='test@test.com',
+        hashed_password=get_password_hash('password'),
+        first_name='Test',
+        last_name='TEST'
+    )
+    internal_token = create_token(user.id)
+    return internal_token.get("access_token")
 
 
 async def collection_film_reel():
