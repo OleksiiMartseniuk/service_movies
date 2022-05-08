@@ -11,20 +11,25 @@ from src.app.person.models import Person
 from src.app.auth.models import User
 
 
-async def get_user_token() -> str:
-    """Token user"""
-    user = await User.create(
+async def create_user() -> User:
+    """ Create user """
+    return await User.create(
         username='test',
         email='test@test.com',
         hashed_password=get_password_hash('password'),
         first_name='Test',
         last_name='TEST'
     )
+
+
+async def get_user_token() -> str:
+    """Token user"""
+    user = await create_user()
     internal_token = create_token(user.id)
     return internal_token.get("access_token")
 
 
-async def collection_film_reel():
+async def collection_film_reel() -> None:
     """ Заполнения данных FilmReel and Group """
     for i in range(2):
         await Group.create(title=f'group_test_{i}')
@@ -47,7 +52,7 @@ async def collection_film_reel():
         )
 
 
-async def collection_person():
+async def collection_person() -> None:
     """ Заполнения Person к FilmReel """
     await collection_film_reel()
 
@@ -73,7 +78,7 @@ async def init_db(db_url, create_db: bool = False, schemas: bool = False) -> Non
         await Tortoise.generate_schemas()
 
 
-async def init(db_url: str = settings.DATABASE_TEST_URL):
+async def init(db_url: str = settings.DATABASE_TEST_URL) -> None:
     await init_db(db_url, True, True)
 
 
