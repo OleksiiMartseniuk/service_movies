@@ -2,6 +2,7 @@
 venv
 .env
 .coverage
-data
+!*src/service/imdb/data/.gitkeep
+src/service/imdb/data/
 .pytest_cache
 htmlcov
