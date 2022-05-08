@@ -1,11 +1,22 @@
+import json
 import pytest
-import os
+
 from src.config import settings
+from src.tests import conf_json
 
 
-@pytest.fixture(autouse=True)
-def clear_file():
-    if os.path.exists(settings.PATH_MOVIES_FILE_TEST):
-        open(settings.PATH_MOVIES_FILE_TEST, 'w').close()
-    if os.path.exists(settings.PATH_GROUP_FILE_TEST):
-        open(settings.PATH_GROUP_FILE_TEST, 'w').close()
+@pytest.fixture
+def create_file(tmp_path) -> tuple:
+    path_groups = tmp_path / 'groups.json'
+    path_movies = tmp_path / 'movies.json'
+    return path_groups, path_movies
+
+
+@pytest.fixture
+def write_group_data(create_file) -> tuple:
+    valid_data = {}
+    for group in settings.GROUPS_LIST:
+        valid_data[group] = [item for item in conf_json.valid_json_answer_collection_data['items']]
+    with open(create_file[0], 'w') as file:
+        json.dump(valid_data, file, ensure_ascii=False, indent=4)
+    return create_file
