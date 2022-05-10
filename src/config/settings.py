@@ -6,13 +6,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 API_KEY = os.getenv('API_KEY')
 
-NAME_DB = os.getenv('NAME_DB')
-USER_DB = os.getenv('USER_DB')
-PASSWORD_DB = os.getenv('PASSWORD_DB')
+NAME_DB = os.getenv('POSTGRES_DB')
+USER_DB = os.getenv('POSTGRES_USER')
+PASSWORD_DB = os.getenv('POSTGRES_PASSWORD')
 HOST_DB = os.getenv('HOST_DB')
 PORT_DB = os.getenv('PORT_DB')
 
-DATABASE_URI = os.getenv('DATABASE_URI')
+DATABASE_URI = f'postgres://{USER_DB}:{PASSWORD_DB}@{HOST_DB}/{NAME_DB}'
 DATABASE_TEST_URL = 'sqlite://:memory:'
 
 ORIGINS = [
