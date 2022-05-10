@@ -1,6 +1,7 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 from tortoise import Tortoise
 
 from src.app.auth.auth import get_password_hash
@@ -87,7 +88,7 @@ def event_loop():
     return asyncio.get_event_loop()
 
 
-@pytest.fixture(autouse=True)
+@pytest_asyncio.fixture(autouse=True)
 async def initialize_tests():
     await init()
     yield
