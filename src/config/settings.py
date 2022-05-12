@@ -47,3 +47,12 @@ DATA_IMDB_DIR = os.path.join(BASE_DIR, 'src/service/imdb/data')
 
 PATH_GROUP_FILE = os.path.join(DATA_IMDB_DIR, 'group_movies.json')
 PATH_MOVIES_FILE = os.path.join(DATA_IMDB_DIR, 'movies.json')
+
+TABLES_LIST = [
+    'filmreel_person_creator', 'filmreel_person_star', 'filmreel_person_actor',
+    'filmreel_person_director', 'filmreel_person_writer', 'filmreel_company',
+    'filmreel_country', 'filmreel_genre', 'filmreel_language',
+    'boxoffice', 'company', 'country',
+    'filmreel', 'genre', 'group',
+    'language', 'person'
+]
