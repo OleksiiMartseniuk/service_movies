@@ -77,7 +77,6 @@ def init(db: ServiceDBIMDB) -> None:
     print('Recording started please wait...')
     start = datetime.now()
     db.write_table()
-    db.close_db()
     stop = datetime.now()
     time = stop - start
     print('Done')
@@ -87,8 +86,7 @@ def init(db: ServiceDBIMDB) -> None:
 def delete(db: ServiceDBIMDB) -> None:
     """ Удаления записей з BD """
     print('Removal started please wait...')
-    db.delete_tables()
-    db.close_db()
+    db.delete_tables(settings.TABLES_LIST)
     print('Done')
 
 
